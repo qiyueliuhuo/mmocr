@@ -1,7 +1,7 @@
 _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
-    '../../_base_/det_models/dbnetpp_r50dcnv2_fpnc.py',
+    '../../_base_/e2e_models/our_net_r50dcnv2_fpnc.py',
     '../../_base_/det_datasets/icdar2015.py',
     '../../_base_/det_pipelines/dbnet_pipeline.py'
 ]
@@ -12,13 +12,13 @@ test_list = {{_base_.test_list}}
 train_pipeline_r50dcnv2 = {{_base_.train_pipeline_r50dcnv2}}
 test_pipeline_4068_1024 = {{_base_.test_pipeline_4068_1024}}
 
-load_from = 'checkpoints/textdet/dbnetpp/res50dcnv2_synthtext.pth'
+load_from = 'checkpoints/textdet/dbnet/res50dcnv2_synthtext.pth'
 
 data = dict(
-    samples_per_gpu=32,
-    workers_per_gpu=8,
+    samples_per_gpu=8,
+    workers_per_gpu=4,
     val_dataloader=dict(samples_per_gpu=1),
-    test_dataloader=dict(samples_per_gpu=2),
+    test_dataloader=dict(samples_per_gpu=1),
     train=dict(
         type='UniformConcatDataset',
         datasets=train_list,
@@ -32,8 +32,4 @@ data = dict(
         datasets=test_list,
         pipeline=test_pipeline_4068_1024))
 
-evaluation = dict(
-    interval=100,
-    metric='hmean-iou',
-    save_best='0_hmean-iou:hmean',
-    rule='greater')
+evaluation = dict(interval=100, metric='hmean-iou')
