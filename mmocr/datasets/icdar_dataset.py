@@ -207,7 +207,7 @@ class IcdarDataset(CocoDataset):
             # 创建文件并写入
             with open(os.path.join(result_save_dir, filename), 'w') as f:
                 for bbox_score in result['boundary_result']:
-                    f.write(str(bbox_score[0]) + ',' + str(bbox_score[1]) +
-                            ',' + str(bbox_score[2]) + ',' + str(bbox_score[3]) + ','
-                            + str(bbox_score[4]) + ',' + str(bbox_score[5]) + ',' +
-                            str(bbox_score[6]) + ',' + str(bbox_score[7]) + ',' + '###\n')
+                    f.write(str(round(bbox_score[0])) + ',' + str(round(bbox_score[1])) + \
+                            ',' + str(round(bbox_score[2])) + ',' + str(round(bbox_score[3])) + ',' \
+                            + str(round(bbox_score[4])) + ',' + str(round(bbox_score[5])) + ',' + \
+                            str(round(bbox_score[6])) + ',' + str(round(bbox_score[7])) + ',' + '###\n')
