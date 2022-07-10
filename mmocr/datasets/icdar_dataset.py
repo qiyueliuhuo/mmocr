@@ -205,7 +205,7 @@ class IcdarDataset(CocoDataset):
             if not os.path.exists(os.path.join(result_save_dir, file_dir)):
                 os.makedirs(os.path.join(result_save_dir, file_dir))
             # 创建文件并写入
-            with open(os.path.join(result_save_dir, filename), 'w') as f:
+            with open(os.path.join(result_save_dir, filename.rsplit('.', 1)[0] + ".txt"), 'w') as f:
                 for bbox_score in result['boundary_result']:
                     f.write(str(round(bbox_score[0])) + ',' + str(round(bbox_score[1])) + \
                             ',' + str(round(bbox_score[2])) + ',' + str(round(bbox_score[3])) + ',' \
