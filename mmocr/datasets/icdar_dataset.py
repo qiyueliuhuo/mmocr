@@ -189,3 +189,25 @@ class IcdarDataset(CocoDataset):
             rank_list=rank_list)
 
         return eval_results
+
+    def format_results(self, results, **kwargs):
+        """Format the results to ICDAR2015 format;
+        """
+        result_save_dir = kwargs.get('result_save_dir', None)
+        assert result_save_dir is not None
+        import os
+        if not os.path.exists(result_save_dir):
+            os.makedirs(result_save_dir)
+        for result in results:
+            filename = result['filename'].split('/', 1)[-1]
+            # 创建文件夹
+            file_dir = filename.rsplit('/', 1)[0]
+            if not os.path.exists(os.path.join(result_save_dir, file_dir)):
+                os.makedirs(os.path.join(result_save_dir, file_dir))
+            # 创建文件并写入
+            with open(os.path.join(result_save_dir, filename), 'w') as f:
+                for bbox_score in result['boundary_result']:
+                    f.write(str(bbox_score[0]) + ',' + str(bbox_score[1]) +
+                            ',' + str(bbox_score[2]) + ',' + str(bbox_score[3]) + ','
+                            + str(bbox_score[4]) + ',' + str(bbox_score[5]) + ',' +
+                            str(bbox_score[6]) + ',' + str(bbox_score[7]) + ',' + '###\n')

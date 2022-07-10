@@ -218,7 +218,9 @@ def main():
             mmcv.dump(outputs, args.out)
         kwargs = {} if args.eval_options is None else args.eval_options
         if args.format_only:
-            dataset.format_results(outputs, **kwargs)
+            # dataset.format_results(outputs, **kwargs)  bug ???
+            # 暂时：修改成将推理结果保存的形式和ICDAR2015一致的标签格式
+            dataset.datasets[0].format_results(outputs, **kwargs)
         if args.eval:
             eval_kwargs = cfg.get('evaluation', {}).copy()
             # hard-code way to remove EvalHook args
