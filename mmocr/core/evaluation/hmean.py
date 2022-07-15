@@ -31,7 +31,8 @@ def output_ranklist(img_results, img_infos, out_file):
 
     sorted_results = []
     for idx, result in enumerate(img_results):
-        name = img_infos[idx]['file_name']
+        # name = img_infos[idx]['file_name']
+        name = img_infos[idx]['filename']
         img_result = result
         img_result['file_name'] = name
         sorted_results.append(img_result)
