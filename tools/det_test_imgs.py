@@ -59,6 +59,9 @@ def main():
     parser.add_argument('checkpoint', type=str, help='Checkpoint file')
     parser.add_argument(
         '--score-thr', type=float, default=0.5, help='Bbox score threshold')
+    parser.add_argument('--compare', action='store_true', help='Compare with ground truth')
+    parser.add_argument('--annotations_root', type=str, default=None,
+                        help='Annotations root path. When detection result compare with ground truth, it should be set.')
     parser.add_argument(
         '--out-dir',
         type=str,
@@ -71,6 +74,7 @@ def main():
     args = parser.parse_args()
 
     assert 0 < args.score_thr < 1
+    assert args.compare and args.annotations_root is not None or not args.compare and args.annotations_root is None
 
     # build the model from a config file and a checkpoint file
     model = init_detector(args.config, args.checkpoint, device=args.device)
@@ -82,10 +86,13 @@ def main():
     mmcv.mkdir_or_exist(out_vis_dir)
     out_txt_dir = osp.join(args.out_dir, 'out_txt_dir')
     mmcv.mkdir_or_exist(out_txt_dir)
+    if args.compare:
+        compare_dir = osp.join(args.out_dir, 'compare_dir')
+        mmcv.mkdir_or_exist(compare_dir)
 
     lines = list_from_file(args.img_list)
     progressbar = ProgressBar(task_num=len(lines))
-    for line in lines:
+    for idx, line in enumerate(lines):
         progressbar.update()
         img_path = osp.join(args.img_root, line.strip())
         if not osp.exists(img_path):
@@ -93,6 +100,7 @@ def main():
         # Test a single image
         result = model_inference(model, img_path)
         img_name = osp.basename(img_path)
+        img_name = "{:0>4}_".format(idx) + img_name
         # save result
         save_results(result, out_txt_dir, img_name, score_thr=args.score_thr)
         # show result
