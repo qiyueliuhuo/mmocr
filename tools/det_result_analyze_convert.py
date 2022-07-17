@@ -13,7 +13,7 @@ def main():
     parser.add_argument('eval_rank_list_file_path', type=str, help='Text detection test script with eval-option  '
                                                                    'rank_list parameter generate json file path')
     parser.add_argument('img_list', type=str, help='Image path list file')
-    parser.add_argument('--ratio', type=float, default=None, optional=True, help='Convert detection result low ratio, '
+    parser.add_argument('--ratio', type=float, default=None, help='Convert detection result low ratio, '
                                                                    'when it\'s set, --hmean-thr is invalid')
     parser.add_argument(
         '--hmean-thr', type=float, default=0.5, help='Single image hmean threshold')
@@ -31,7 +31,7 @@ def main():
     with open(args.img_list, 'w') as f:
         for i, img_result in enumerate(json_data):  # In json file, Smaller hmean value in front.
             if ratio_num is not None and i <= ratio_num or img_result['hmean'] < args.hmean_thr:
-                f.write(img_result['img_path'] + '\n')
+                f.write(img_result['file_name'] + '\n')
             hmean_list.append(img_result['hmean'])
     print('The image min hmean:', min(hmean_list))
     print('The image max hmean:', max(hmean_list))
