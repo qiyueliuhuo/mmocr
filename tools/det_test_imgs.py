@@ -103,6 +103,7 @@ def show_result_compare(img_path, out_img_name, result, annotations_root, compar
             img,
             boundaries,
             labels,
+            show=False,
             show_score=show_score)
     # save result
     out_img_path = osp.join(compare_dir, out_img_name)
