@@ -14,3 +14,11 @@ python tools/test.py configs/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar20
 nohup python tools/train.py  configs/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py 
 
 python tools/analyze_logs.py plot_curve  result_analyze/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.log.json  --out result_analyze/loss --legend loss
+
+
+如何得到模型在某个数据集中推理效果较差的图像及推理结果？
+
+1. 先通过 `python tools/test.py configs/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth --eval hmean-ic13 --show-score-thr 0.7 --eval-option rank_list=result_analyze/eval_hmean-ic13_thr_0.7_result.json
+` 命令，推理得到某个指标下推理效果排序（效果越差越考前），保存为 `result_analyze/eval_hmean-ic13_thr_0.7_result.json` 文件。
+2. 将推理结果较差的图像路径保存在 `data/icdar2015/test_list.txt` 文件中。
+3. 最后，通过命令 `python tools/det_test_imgs.py data/icdar2015 data/icdar2015/test_lists.txt configs/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py checkpoints/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth ` 得到这些图像的推理结果并保存在 `results` 目录下。
