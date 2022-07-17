@@ -107,7 +107,8 @@ def show_result_compare(img_path, out_img_name, result, annotations_root, compar
             show_score=show_score)
     # save result
     out_img_path = osp.join(compare_dir, out_img_name)
-    mmcv.imwrite(out_img_path, img)
+
+    mmcv.imwrite(img, out_img_path)
     return
 
 
