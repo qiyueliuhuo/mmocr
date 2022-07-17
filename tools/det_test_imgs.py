@@ -9,6 +9,9 @@ from mmcv.utils import ProgressBar
 from mmocr.apis import init_detector, model_inference
 from mmocr.models import build_detector  # noqa: F401
 from mmocr.utils import list_from_file, list_to_file
+from mmocr.core import imshow_pred_boundary
+import numpy as np
+import cv2
 
 
 def gen_target_path(target_root_path, src_name, suffix):
@@ -49,6 +52,62 @@ def save_results(result, out_dir, img_name, score_thr=0.3):
         ','.join([str(round(x)) for x in row]) for row in valid_boundary_res
     ]
     list_to_file(txt_file, lines)
+
+
+def show_result_compare(img_path, out_img_name, result, annotations_root, compare_dir):
+    """ Visual show image detection result compare with ground truth annotation.
+    Args:
+        img_path (str): Image path.
+        out_img_name(str): the out compare image name.
+        result(dict): result dict.
+        annotations_root(str): Annotation file root.
+        compare_dir: compare result output dir.
+
+    Returns:
+        None.
+    """
+    annotation_file = osp.join(annotations_root, 'gt_' + img_path.split('/')[-1].split('.')[0] + '.txt')
+    if not osp.exists(annotation_file):
+        print('{} not exists'.format(annotation_file))
+        return
+    # left show ground truth and right show detection result
+    img_left = mmcv.imread(img_path)
+    img_right = img_left.copy()
+    img = np.concatenate((img_left, img_right), axis=1)
+    # dontCare = transcription == "###"
+
+    # draw ground truth
+    boundaries = None
+    labels = []
+    if 'boundary_result' in result.keys():
+        boundaries = result['boundary_result']
+        labels = [0] * len(boundaries)
+    with open(annotation_file, 'r') as f:
+        lines = f.readlines()
+    for line in lines:
+        transcription = line.strip().split(',')[-1]
+        if transcription == '###':
+            # don't care
+            continue
+        boundaries_int = np.array(line.split(',')[:8]).astype(np.int32)
+        cv2.polylines(img, [boundaries_int.reshape(-1, 1, 2)], True, color=(0, 255, 0), thickness=1)
+
+    # draw detection result
+    show_score = True
+    if boundaries is not None:
+        for boundary in boundaries:
+            boundary[0] = boundary[0] + img_left.shape[1]
+            boundary[2] = boundary[2] + img_left.shape[1]
+            boundary[4] = boundary[4] + img_left.shape[1]
+        imshow_pred_boundary(
+            img,
+            boundaries,
+            labels,
+            show_score=show_score)
+    # save result
+    out_img_path = osp.join(compare_dir, out_img_name)
+    mmcv.imwrite(out_img_path, img)
+    return
 
 
 def main():
@@ -111,6 +170,10 @@ def main():
             'out_file': out_file
         }
         model.show_result(img_path, result, **kwargs_dict)
+        # show result compare with ground truth
+        if args.compare:
+            show_result_compare(img_path, img_name, result, args.annotations_root,
+                                compare_dir)
 
     print(f'\nInference done, and results saved in {args.out_dir}\n')
 
