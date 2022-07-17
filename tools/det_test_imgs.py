@@ -74,8 +74,7 @@ def show_result_compare(img_path, out_img_name, result, annotations_root, compar
     img_left = mmcv.imread(img_path)
     img_right = img_left.copy()
     img = np.concatenate((img_left, img_right), axis=1)
-    # dontCare = transcription == "###"
-
+    thickness = 2
     # draw ground truth
     boundaries = None
     labels = []
@@ -90,7 +89,7 @@ def show_result_compare(img_path, out_img_name, result, annotations_root, compar
             # don't care
             continue
         boundaries_int = np.array(line.split(',')[:8]).astype(np.int32)
-        cv2.polylines(img, [boundaries_int.reshape(-1, 1, 2)], True, color=(0, 255, 0), thickness=1)
+        cv2.polylines(img, [boundaries_int.reshape(-1, 1, 2)], True, color=(0, 255, 0), thickness=thickness)
 
     # draw detection result
     show_score = False
@@ -105,6 +104,7 @@ def show_result_compare(img_path, out_img_name, result, annotations_root, compar
             boundaries,
             labels,
             show=False,
+            thickness=thickness,
             show_score=show_score)
     # save result
     out_img_path = osp.join(compare_dir, out_img_name)
