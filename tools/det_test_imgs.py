@@ -93,12 +93,13 @@ def show_result_compare(img_path, out_img_name, result, annotations_root, compar
         cv2.polylines(img, [boundaries_int.reshape(-1, 1, 2)], True, color=(0, 255, 0), thickness=1)
 
     # draw detection result
-    show_score = True
-    if boundaries is not None:
+    show_score = False
+    if boundaries is not None and len(boundaries) > 0:
         for boundary in boundaries:
             boundary[0] = boundary[0] + img_left.shape[1]
             boundary[2] = boundary[2] + img_left.shape[1]
             boundary[4] = boundary[4] + img_left.shape[1]
+            boundary[6] = boundary[6] + img_left.shape[1]
         imshow_pred_boundary(
             img,
             boundaries,
