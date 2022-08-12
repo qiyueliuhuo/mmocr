@@ -25,3 +25,4 @@ python tools/analyze_logs.py plot_curve  result_analyze/dbnetpp_r50dcnv2_fpnc_12
 
 第3步，修改命令为 `python tools/det_test_imgs.py data/icdar2015/imgs data/icdar2015/test_lists.txt configs/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py checkpoints/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth --compare --annotations_root data/icdar2015/annotations/test/`
 增加了 `--compare`等参数，表示生成与ground truth 对比图像。
+
