@@ -26,3 +26,21 @@ python tools/analyze_logs.py plot_curve  result_analyze/dbnetpp_r50dcnv2_fpnc_12
 第3步，修改命令为 `python tools/det_test_imgs.py data/icdar2015/imgs data/icdar2015/test_lists.txt configs/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py checkpoints/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth --compare --annotations_root data/icdar2015/annotations/test/`
 增加了 `--compare`等参数，表示生成与ground truth 对比图像。
 
+
+报错：shapely.errors.TopologicalError: The operation 'GEOSIntersection_r' could not be performed. Likely cause is invalidity of the geometry <shapely.geometry.polygon.Polygon object at 0x7f1e39c959d0>
+
+在instances_training.json
+删除
+tr_img_07802.jpg
+tr_img_02840.jpg
+tr_img_04029.jpg
+tr_img_09061.jpg
+tr_img_02094.jpg
+tr_img_06065.jpg
+tr_img_07054.jpg
+tr_img_07857.jpg
+tr_img_00109.jpg
+tr_img_09248.jpg
+tr_img_08658.jpg
+
+仍然报错，暂时未解决，无法训练。
